@@ -1,10 +1,19 @@
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useState } from "react"
+import mainImg from '../../assets/about.png'
 
 const Auth= () => {
   const [email, setemail] = useState("")
   const [password, setpassword] = useState("")
-  const [confPassowrd, setconfPassowrd] = useState("")
+  const [confirmPassowrd, setconfirmPassowrd] = useState("")
+  const handleLogin = async() => {
+    
+  }
+  const handleSignup = async() => {
+
+  }
   return (
     <>
       <div className="flex items-center justify-center h-[100vh] w-[100vw]">
@@ -23,10 +32,22 @@ const Auth= () => {
                   <TabsTrigger className="data-[state=active]:bg-transparent text-black text-opacity-90 border-b-2 rounded-none w-full data-[state=active]:text-black data-[state=active]:font-semibold data-[state=active]:border-b-purple-500 p-3 transition-all duration-300" value="login">Login</TabsTrigger>
                   <TabsTrigger className="data-[state=active]:bg-transparent text-black text-opacity-90 border-b-2 rounded-none w-full data-[state=active]:text-black data-[state=active]:font-semibold data-[state=active]:border-b-purple-500 p-3 transition-all duration-300" value="signup">SignUp</TabsTrigger>
                 </TabsList>
-                <TabsContent value="login"></TabsContent>
-                <TabsContent value="signup"></TabsContent>
+                <TabsContent className="flex flex-col gap-5 mt-10" value="login">
+                  <Input placeholder="Email" type="email" className="rounded-full p-6" value={email} onChange={(e) => {setemail(e.target.value)}}/>
+                  <Input placeholder="Password" type="password" className="rounded-full p-6" value={password} onChange={(e) => {setpassword(e.target.value)}}/>
+                  <Button className="rounded-full p-6" onClick={handleLogin}>Login</Button>
+                </TabsContent>
+                <TabsContent className="flex flex-col gap-5" value="signup">
+                  <Input placeholder="Email" type="email" className="rounded-full p-6" value={email} onChange={(e) => {setemail(e.target.value)}}/>
+                  <Input placeholder="Password" type="password" className="rounded-full p-6" value={password} onChange={(e) => {setpassword(e.target.value)}}/>
+                  <Input placeholder="Confirm Password" type="password" className="rounded-full p-6" value={confirmPassowrd} onChange={(e) => {setconfirmPassowrd(e.target.value)}}/>
+                  <Button className="rounded-full p-6" onClick={handleSignup}>Signup</Button>
+                </TabsContent>
               </Tabs>
             </div>
+          </div>
+          <div className="hidden xl:flex justify-center items-center">
+            <img src={mainImg} alt="Login page" className="ml-10"/>
           </div>
         </div>
       </div>
