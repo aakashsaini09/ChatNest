@@ -3,15 +3,36 @@ import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useState } from "react"
 import mainImg from '../../assets/about.png'
+import { toast } from "sonner"
+import { apiClient } from "@/lib/api-client"
+import { SIGNUP_ROUTE } from "@/utils/constants"
 
 const Auth= () => {
   const [email, setemail] = useState("")
   const [password, setpassword] = useState("")
   const [confirmPassowrd, setconfirmPassowrd] = useState("")
+  const validateSignup = () => {
+    if(!email.length){
+      toast.error("Email is required.")
+      return false
+    }
+    if(!password.length){
+      toast.error("Password is required.")
+      return false
+    }
+    if(password !== confirmPassowrd){
+      toast.error("Password and Confirm-Password should be same.")
+      return false
+    }
+    return true
+  }
   const handleLogin = async() => {
-    
   }
   const handleSignup = async() => {
+    if(validateSignup()){
+      const response = await apiClient.post(SIGNUP_ROUTE, {email, password})
+      console.log(response)
+    }
 
   }
   return (
