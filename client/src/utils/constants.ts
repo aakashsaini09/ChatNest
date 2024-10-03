@@ -4,3 +4,4 @@ export const AUTH_ROUTES = "api/auth";
 
 // Routes
 export const SIGNUP_ROUTE = `${AUTH_ROUTES}/signup`
+export const SIGNIN_ROUTE = `${AUTH_ROUTES}/signin`
