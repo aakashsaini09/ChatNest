@@ -10,7 +10,7 @@ interface UserData {
   id: string;
   username: string;
   email: string;
-  password: string;
+  profileSetup: boolean;
 }
 
 export const userDataState = atom<UserData>({
@@ -19,7 +19,7 @@ export const userDataState = atom<UserData>({
     id: "",
     username: "",
     email: "",
-    password: ""
+    profileSetup: false
   }
 });
 

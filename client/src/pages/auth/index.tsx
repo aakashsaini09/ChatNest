@@ -9,10 +9,10 @@ import { SIGNIN_ROUTE, SIGNUP_ROUTE } from "@/utils/constants"
 import { useNavigate } from "react-router-dom"
 import { useRecoilState } from "recoil"
 import { userDataState } from "@/store/slices/auth-slice"
-
 const Auth= () => {
   const navigate = useNavigate()
   // const { setUserInfo } = useAppStore() as { setUserInfo: (user: any) => void }
+  // @ts-ignore
   const [userData, setUserData] = useRecoilState(userDataState);
   const [email, setemail] = useState("")
   const [password, setpassword] = useState("")
