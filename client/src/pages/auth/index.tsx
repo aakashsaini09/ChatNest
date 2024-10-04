@@ -6,8 +6,14 @@ import mainImg from '../../assets/about.png'
 import { toast } from "sonner"
 import { apiClient } from "@/lib/api-client"
 import { SIGNIN_ROUTE, SIGNUP_ROUTE } from "@/utils/constants"
+import { useNavigate } from "react-router-dom"
+import { useRecoilState } from "recoil"
+import { userDataState } from "@/store/slices/auth-slice"
 
 const Auth= () => {
+  const navigate = useNavigate()
+  // const { setUserInfo } = useAppStore() as { setUserInfo: (user: any) => void }
+  const [userData, setUserData] = useRecoilState(userDataState);
   const [email, setemail] = useState("")
   const [password, setpassword] = useState("")
   const [confirmPassowrd, setconfirmPassowrd] = useState("")
@@ -40,12 +46,22 @@ const Auth= () => {
   const handleLogin = async() => {
     if(validateSignin()){
       const response = await apiClient.post(SIGNIN_ROUTE, {email, password}, {withCredentials: true})
-      console.log(response)
+      if(response.data.user.id){
+        setUserData(response.data.user);
+        if(response.data.user.profileSetup) navigate('/chat')
+          else navigate('/profile')
+      }
+      console.log(response.data.user)
     }
   }
   const handleSignup = async() => {
     if(validateSignup()){
       const response = await apiClient.post(SIGNUP_ROUTE, {email, password}, {withCredentials: true})
+      if(response.status === 201) {
+        // setUserInfo(response.data.user);
+        setUserData(response.data.user);
+        navigate('/profile');
+      } 
       console.log(response)
     }
 
