@@ -15,7 +15,7 @@ app.use(cors({
 app.use(cookieParser());
 app.use(express.json());
 app.use('/api/auth', authRoutes)
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 const dbURL = process.env.DATABASE_URL
 const server = app.listen(port, () => {
     console.log(`Server is running at port: ${port}`)

@@ -65,3 +65,20 @@ export const signin = async (req, res, next) => {
         return res.status(400).send("Internal Server errror");
     }
 }
+export const getUserInfo = async (req, res, next) => {
+    try {  
+        // return res.status(200).json({user: {
+        //     id: user.id,
+        //     email: user.email,
+        //     profileSetup: user.profileSetup,
+        //     firstName: user.firstName,
+        //     lastName: user.lastName,
+        //     image: user.image,
+        //     color: user.color
+
+        // }})
+    } catch (err) {
+        console.log(err)
+        return res.status(400).send("Internal Server errror");
+    }
+}
