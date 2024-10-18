@@ -9,10 +9,10 @@ const Chat= () => {
   const navigate = useNavigate()
   useEffect(() => {
     if(!userData.profileSetup){
-      toast("Please setup profile to continue.")
-      navigate('/profile')
+      toast.error("Please setup profile to continue.");
+      navigate('/profile');
     }
-  }, [])
+  }, [userData, navigate])
   
     return (
       <>
