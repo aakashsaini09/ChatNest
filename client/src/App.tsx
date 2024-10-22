@@ -41,7 +41,7 @@ useEffect(() => {
   }else{
     setloading(false)
   }
-}, [userData, setUserData])
+}, [])
 if(loading){
   return <div>Loaidng...</div>;
 }
@@ -50,19 +50,19 @@ if(loading){
       <BrowserRouter>
         <Routes>
           <Route path='/auth' element={
-            <AuthRoute>
+            // <AuthRoute>
               <Auth/>
-            </AuthRoute>
+            // </AuthRoute>
             }/>
           <Route path="/chat" element={
-            <PrivateRoute>
+            // <PrivateRoute>
               <Chat/>
-            </PrivateRoute>
+            // </PrivateRoute>
               }/>
           <Route path="/profile" element={
-            <PrivateRoute>
+            // <PrivateRoute>
               <Profile/>
-            </PrivateRoute>
+            // </PrivateRoute>
             }/>
           <Route path='*' element={<Navigate to="/auth"/>}/>
         </Routes>
