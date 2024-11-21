@@ -19,7 +19,7 @@ export async function registerUser(req, res) {
         }
         const user = new UserModel(payload)
         const userSave = await user.save()
-        return res.status(201).json({
+        return res.status(200).json({
             success: true,
             message: "User created successfully",
             data: userSave
