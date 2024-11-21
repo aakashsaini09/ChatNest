@@ -1,8 +1,9 @@
-import UserModel from "../schema/UserSchema";
+import UserModel from "../schema/UserSchema.js";
 import bcryptjs from 'bcryptjs'
 export async function registerUser(req, res) {
     try {
         const { name, email, password, profile_pic }= req.body;
+        console.log("req.body is: ", req.body)
         const checkEmail = await UserModel.findOne({ email: email})
         if(checkEmail){
             return res.status(500).json({
@@ -25,6 +26,7 @@ export async function registerUser(req, res) {
             data: userSave
         })
     } catch (err) {
+        console.log("error in catch: ", err)
         return res.status(500).json({
             success: false,
             message: "Something went wrong",
