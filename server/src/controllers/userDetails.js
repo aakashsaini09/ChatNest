@@ -2,8 +2,8 @@ import { extractUserInfo } from "../helper/ExtractToken.js"
 
 export async function userDetails(req, res) {
     const token = req.cookies.token || ''
+    const user = await extractUserInfo(token)
     try {
-        const user = await extractUserInfo(token)
         return res.status(200).json({
             success: true,
             message: "User details",

@@ -13,7 +13,7 @@ export async function extractUserInfo(token) {
         const user = UserModel.findById(decode.id).select("-password")
         return user
     } catch (err) {
-        return res.status(500).json({
+        return({
             success: false,
             message: "Something went wrong",
             error: err
