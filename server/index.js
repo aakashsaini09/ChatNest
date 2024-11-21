@@ -4,7 +4,7 @@ import router from './src/routes/index.js'
 import cors from 'cors'
 const app = express()
 const port = process.env.PORT || 8080
-console.log("port is: ", process.env.PORT)
+// console.log("port is: ", process.env.PORT)
 app.use(cors())
 app.use(express.json())
 app.use('/api', router)
