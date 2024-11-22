@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { IoCloseOutline } from "react-icons/io5";
+import { LuUserCircle2 } from "react-icons/lu";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -40,6 +40,9 @@ const CheckEmail = () => {
     <>
         <div className="mt-5">
         <div className="bg-white w-full max-w-sm rounded overflow-hidden p-4 mx-auto">
+          <div>
+            <LuUserCircle2/>
+          </div>
           <h3 className="text-center font-bold text-xl">Welcome to ChatNest</h3>
           <form className="grid gap-4 mt-5" onSubmit={handleSubmit}>
            
