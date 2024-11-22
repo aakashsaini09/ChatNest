@@ -1,8 +1,13 @@
 import { useState } from "react"
 import { IoCloseOutline } from "react-icons/io5";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import uploadFile from "../helpers/uploadFiles";
+import axios from "axios";
+import toast from "react-hot-toast";
 const RegisterPage = () => {
   const [uploadPhoto, setUploadPhoto] = useState<File | null>(null)
+  const navigate = useNavigate()
+  const url = import.meta.env.VITE_APP_BACKEND_URL
   const [data, setData] = useState({
     name: '',
     email: "",
@@ -18,19 +23,41 @@ const RegisterPage = () => {
       }
     })
   }
-  const handleUploadPhoto = (e: any) => {
+  const handleUploadPhoto = async(e: any) => {
     const file = e.target.files[0]
     setUploadPhoto(file)
+    const imgUrl = await uploadFile(e.target.files[0])
+    setData((pre) => {
+      return{
+        ...pre, 
+        profile_pic: imgUrl?.url
+      }
+    })
   }
   const handleClearUploadPhoto = (e: any) => {
     e.preventDefault();
     e.stopPropagation()
     setUploadPhoto(null)
   }
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async(e: any) => {
     e.preventDefault();
     e.stopPropagation()
-    console.log("data: ", data)
+    try {
+      const res = await axios.post(`${url}/register`, data);
+      console.log("res: ", res)
+      if(res.data.success){
+        toast.success("User Created Successfully")
+        setData({
+          name: '',
+          email: "",
+          password: "",
+          profile_pic: ""
+        })
+        navigate('/email')
+      }
+    } catch (error) {
+      toast.error((error as any)?.response?.data?.message)
+    }
   }
   return (
     <>
