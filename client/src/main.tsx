@@ -10,6 +10,6 @@ createRoot(document.getElementById('root')!).render(
       {/* @ts-ignore */}
       <RouterProvider router={router}>
       <App />
-      </RouterProvider>,
+      </RouterProvider>
     </StrictMode>
 )
