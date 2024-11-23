@@ -5,7 +5,7 @@ import uploadFile from "../helpers/uploadFiles";
 import axios from "axios";
 import toast from "react-hot-toast";
 const RegisterPage = () => {
-  const [uploadPhoto, setUploadPhoto] = useState<File | null>(null)
+  const [uploadPhoto, setUploadPhoto] = useState<any>("")
   const navigate = useNavigate()
   const url = import.meta.env.VITE_APP_BACKEND_URL
   const [data, setData] = useState({
@@ -34,16 +34,21 @@ const RegisterPage = () => {
       }
     })
   }
+
   const handleClearUploadPhoto = (e: any) => {
     e.preventDefault();
     e.stopPropagation()
-    setUploadPhoto(null)
+    setUploadPhoto("")
   }
   const handleSubmit = async(e: any) => {
     e.preventDefault();
     e.stopPropagation()
+    const payload = {
+      ...data,
+      profile_pic: data.profile_pic, // If not using state update directly, ensure this is present
+    };
     try {
-      const res = await axios.post(`${url}/register`, data);
+      const res = await axios.post(`${url}/register`, payload);
       console.log("res: ", res)
       if(res.data.success){
         toast.success("User Created Successfully")
