@@ -3,7 +3,10 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 import Avatar from "../components/Avatar";
+import { useDispatch } from "react-redux";
+import { setToken } from "../redux/userSlice";
 const CheckPassword = () => {
+  const dispatch = useDispatch()
   const navigate = useNavigate()
   const location = useLocation()
   // console.log("Location: ", location.state)
@@ -33,13 +36,6 @@ const CheckPassword = () => {
     e.stopPropagation()
     const reqURL = `${url}/password`
     try {
-      // const res = await axios({
-      //   method: 'post', url: reqURL, data: {
-      //     userId: location?.state?._id,
-      //     password: data.password
-      //   },
-      //   withCredentials: true
-      // })
       const res = await axios.post(`${reqURL}`, {
         userId: location?.state?._id,
         password: data.password
@@ -48,6 +44,10 @@ const CheckPassword = () => {
       })
       console.log("res is: ", res)
       if(res.data.success){
+        dispatch(setToken(res.data.token));
+        
+        console.log("token? ", res.data.token)
+        localStorage.setItem('token', res?.data?.token)
         toast.success("User Created Successfully")
         setData({
           password: ""

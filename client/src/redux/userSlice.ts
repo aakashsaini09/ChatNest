@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit'
-
 export interface CounterState {
   _id: String,
   name: String,
@@ -7,7 +6,6 @@ export interface CounterState {
   profile_pic: String,
   token: String
 }
-
 const initialState: CounterState = {
   _id: "",
   name: "",
@@ -15,7 +13,6 @@ const initialState: CounterState = {
   profile_pic: "",
   token: ""
 }
-
 export const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -27,7 +24,7 @@ export const userSlice = createSlice({
         state.profile_pic = action.payload.profile_pic
     },
     setToken: (state, action) => {
-        state.token = action.payload.token
+      state.token = action.payload;
     },
     // @ts-ignore
     logout:  (state, action) => {
@@ -39,8 +36,6 @@ export const userSlice = createSlice({
     }
   },
 })
-
-// Action creators are generated for each case reducer function
 export const { setUser, setToken, logout } = userSlice.actions
-
 export default userSlice.reducer
+
