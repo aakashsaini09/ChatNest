@@ -6,7 +6,11 @@ import cors from 'cors'
 const app = express()
 const port = process.env.PORT || 8080
 // console.log("port is: ", process.env.PORT)
-app.use(cors())
+const corsOptions = {
+    origin: 'http://localhost:5173', // Your frontend's URL
+    credentials: true, // Allow credentials (cookies, Authorization headers, etc.)
+  };
+app.use(cors(corsOptions))
 app.use(express.json())
 app.use(cookieParser())
 app.use('/api', router)

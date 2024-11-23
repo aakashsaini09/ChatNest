@@ -1,14 +1,23 @@
-import { useState } from "react"
-import { PiUserCircle as LuUserCircle2 } from "react-icons/pi";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react"
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
+import Avatar from "../components/Avatar";
 const CheckPassword = () => {
   const navigate = useNavigate()
+  const location = useLocation()
+  // console.log("Location: ", location.state)
   const url = import.meta.env.VITE_APP_BACKEND_URL
   const [data, setData] = useState({
     password: ""
   })
+  useEffect(() => {
+    if(!location?.state?.name){
+      navigate('/email')
+    }
+    
+  }, [])
+  
   const handleOnChange = (e: any) => {
 
     const { name, value } = e.target
@@ -22,9 +31,22 @@ const CheckPassword = () => {
   const handleSubmit = async(e: any) => {
     e.preventDefault();
     e.stopPropagation()
+    const reqURL = `${url}/password`
     try {
-      const res = await axios.post(`${url}/password`, data);
-      console.log("res: ", res)
+      // const res = await axios({
+      //   method: 'post', url: reqURL, data: {
+      //     userId: location?.state?._id,
+      //     password: data.password
+      //   },
+      //   withCredentials: true
+      // })
+      const res = await axios.post(`${reqURL}`, {
+        userId: location?.state?._id,
+        password: data.password
+      }, { 
+        withCredentials: true 
+      })
+      console.log("res is: ", res)
       if(res.data.success){
         toast.success("User Created Successfully")
         setData({
@@ -40,8 +62,9 @@ const CheckPassword = () => {
     <>
         <div className="mt-5">
         <div className="bg-white w-full max-w-sm rounded overflow-hidden p-4 mx-auto">
-          <div className="w-fit mx-auto mb-2">
-            <LuUserCircle2 size={80}/>
+          <div className="w-fit mx-auto mb-2 flex justify-center items-center flex-col">
+            <Avatar height={70} width={70} name={location?.state?.name} profile_pic={location?.state?.profile_pic} />
+            <h2 className="font-semibold text-lg">{location?.state?.name}</h2>
           </div>
           <h3 className="text-center font-bold text-xl">Welcome to ChatNest</h3>
           <form className="grid gap-4 mt-5" onSubmit={handleSubmit}>
@@ -62,7 +85,7 @@ const CheckPassword = () => {
               Let's Go
             </button>
           </form>
-          <div className="text-center mt-5">New User? <Link to={'/register'} className="font-bold hover:text-primary">Register</Link></div>
+          <div className="text-center mt-5"><Link to={'/forgot-password'} className="font-bold hover:text-primary">Forgot Password?</Link></div>
         </div>
       </div>
     </>

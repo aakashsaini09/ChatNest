@@ -48,6 +48,7 @@ const RegisterPage = () => {
       profile_pic: data.profile_pic, // If not using state update directly, ensure this is present
     };
     try {
+      console.log("payload: ", payload)
       const res = await axios.post(`${url}/register`, payload);
       console.log("res: ", res)
       if(res.data.success){
