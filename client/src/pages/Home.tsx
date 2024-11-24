@@ -5,19 +5,18 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useEffect } from "react";
 import { logout, setUser } from "../redux/userSlice";
+import Sidebar from "../components/Sidebar";
 const Home = () => {
   const url = `${import.meta.env.VITE_APP_BACKEND_URL}/user-details`
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const user = useSelector((state: RootState) => state.user);
-  console.log("user in homepage: ", user)
+  useSelector((state: RootState) => state.user);
   const getUserInfo = async() => {
     try {
       const res = await axios({
         url: url,
         withCredentials: true
       });
-      console.log("res: ", res)
       if(res.data.logout){
         dispatch(logout({}))
         navigate('/email')
@@ -32,14 +31,11 @@ const Home = () => {
   useEffect(() => {
     getUserInfo()
   }, [])
-  
   return (
-    <>
-      Homepage
-      <section>
-        <Outlet/>
-      </section>
-    </>
+    <div className="grid grid-cols-[300px,1fr] h-screen max-h-screen">
+      <section className="bg-white"><Sidebar/></section>
+      <section><Outlet/></section>
+    </div>
   )
 }
 export default Home
