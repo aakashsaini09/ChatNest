@@ -30,19 +30,18 @@ const Avatar = ({userId,name,profile_pic,width,height}: any) => {
     ]
 
     const randomNumber = Math.floor(Math.random() * 9)
-
+    
     // const isOnline = onlineUser.includes(userId)
   return (
     <div className={`text-slate-800  rounded-full font-bold relative`} style={{width : width+"px", height : height+"px" }}>
-        {
-            profile_pic ? (
-                <img
-                    src={profile_pic}
-                    width={width}
-                    height={height}
-                    alt={name}
-                    className='overflow-hidden rounded-full'
-                />
+    {
+        profile_pic ? (
+            <img
+                src={profile_pic}
+                width={width}
+                alt={name}
+                className={`overflow-hidden rounded-full h-[${height}px]`}
+            />
             ) : (
                 name ? (
                     <div  style={{width : width+"px", height : height+"px" }} className={`overflow-hidden rounded-full flex justify-center items-center text-lg ${bgColor[randomNumber]}`}>
