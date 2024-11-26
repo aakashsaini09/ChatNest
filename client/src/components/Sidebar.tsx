@@ -24,7 +24,7 @@ const Sidebar = () => {
             </div>
             <div className="flex flex-col items-center justify-center gap-4">
               <button title={user.name as string} className="mx-auto" onClick={()=> seteditUser(true)}>
-                <Avatar profile_pic={user.profile_pic} name={user.name} width={12} height={12}/>
+                <Avatar profile_pic={user.profile_pic} name={user.name} width={40} height={40}/>
               </button>
                 <button title="Logout" className="w-12 h-12 flex justify-center items-center cursor-pointer hover:bg-slate-300 rounded">
                     <span className="-ml-2">

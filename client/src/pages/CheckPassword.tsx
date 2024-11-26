@@ -63,7 +63,7 @@ const CheckPassword = () => {
         <div className="mt-5">
         <div className="bg-white w-full max-w-sm rounded overflow-hidden p-4 mx-auto">
           <div className="w-fit mx-auto mb-2 flex justify-center items-center flex-col">
-            <Avatar height={20} width={20} name={location?.state?.name} profile_pic={location?.state?.profile_pic} />
+            <Avatar height={65} width={65} name={location?.state?.name} profile_pic={location?.state?.profile_pic} />
             <h2 className="font-semibold text-lg">{location?.state?.name}</h2>
           </div>
           <h3 className="text-center font-bold text-xl">Welcome to ChatNest</h3>

@@ -1,63 +1,132 @@
-import { useState } from "react"
-import Avatar from "./Avatar"
-import uploadFile from "../helpers/uploadFiles"
+import React, { useEffect, useRef, useState } from 'react'
+import Avatar from './Avatar'
+import uploadFile from '../helpers/uploadFiles'
+import axios from 'axios'
+import toast from 'react-hot-toast'
+import { useDispatch } from 'react-redux'
+import { setUser } from '../redux/userSlice'
 
-const EditUserPopup = ({onclose, data}: any) => {
-  const [userData, setuserData] = useState({
-    name: data.name,
-    profile_pic: data.profile_pic,
 
-  })
-  const handleOnChange = (e: any) => {
-    const { name, value} = e.target
-    setuserData((pre) => {
-      return{
-        ...pre, [name]: value
-      }
+const EditUserDetails = ({onclose, data}:any) => {
+    const [userData,setuserData] = useState({
+        
+        name : data?.user,
+        profile_pic : data?.profile_pic
     })
-  }
-  const handleUploadPhoto = async(e: any) => {
-    const file = e.target.files[0]
-    const imgUrl = await uploadFile(e.target.files[0])
-    setuserData((pre) => {
-      return{
-        ...pre, 
-        profile_pic: imgUrl?.url
-      }
-    })
-  }
-  const handleSubmit = (e: any) => {
-    e.preventDefault()
-    e.stopPropagation()
-  }
+    const uploadPhotoRef = useRef<HTMLInputElement>(null)
+    const dispatch = useDispatch()
+    const url = import.meta.env.VITE_APP_BACKEND_URL
+
+    useEffect(()=>{
+        setuserData((preve)=>{
+            return{
+                ...preve,
+                ...data
+            }
+        })
+    },[data])
+
+    const handleOnChange = (e: any)=>{
+        const { name, value } = e.target
+
+        setuserData((preve)=>{
+            return{
+                ...preve,
+                [name] : value
+            }
+        })
+    }
+
+    const handleOpenUploadPhoto = (e: any)=>{
+        e.preventDefault()
+        e.stopPropagation()
+
+        uploadPhotoRef?.current?.click()
+    }
+    const handleUploadPhoto = async(e: any)=>{
+        const file = e.target.files[0]
+
+        const uploadPhoto = await uploadFile(file)
+
+        setuserData((preve)=>{
+        return{
+            ...preve,
+            profile_pic : uploadPhoto?.url
+        }
+        })
+    }
+    const handleSubmit = async(e: any)=>{
+        e.preventDefault()
+        e.stopPropagation()
+        try {
+            const URL = `${url}/update-user`
+
+            const response = await axios({
+                method : 'post',
+                url : URL,
+                data : userData,
+                withCredentials : true
+            })
+            toast.success(response?.data?.message)
+            
+            if(response.data.success){
+                dispatch(setUser(response.data.user))
+                onclose()
+            }
+         
+        } catch (error) {
+            console.log(error)
+            toast.error("something went wrong")
+        }
+    }
   return (
-    <div className="fixed top-0 bottom-0 right-0 left-0 bg-gray-700 bg-opacity-40 flex justify-center items-center">
-      <div className="bg-white p-4 py-5 m-1 rounded w-full max-w-sm">
-        <h2 className="font-semibold">Profile Details</h2>
-        <p className="text-sm">Edit User Details</p>
-        <form className="grid gap-3 mt-3" onSubmit={handleSubmit}>
-          <div className="flex flex-col gap-1">
-            <label htmlFor="name">Name: </label>
-            <input className="w-full py-1 px-2 focus:outline-primary border-0.5" onChange={handleOnChange} type="text" name="name" id="name" value={userData.name} />
-          </div>
-          <div>
-            <div>Photo: </div>
-            <div className="my-1 flex items-center gap-4">
-              <Avatar width={14} height={14} profile_pic={data.profile_pic}/>
-            <label htmlFor="profile_pic">
-              <button className="font-semibold">Change Photo</button>
-              <input id="profile_pic" onChange={handleUploadPhoto} type="file" className="hidden" />
-            </label>
-            </div>
-          </div>
-          <div className="flex gap-2 w-fit ml-auto mt-3">
-            <button onClick={onclose} className="border-primary border text-primary hover:bg-gray-200 px-4 py-2 rounded">Cancle</button>
-            <button onSubmit={handleSubmit} className="border-primary bg-primary text-white px-5 py-2 rounded hover:bg-secondary">Save</button>
-          </div>
-        </form>
-      </div>
+    <div className='fixed top-0 bottom-0 left-0 right-0 bg-gray-700 bg-opacity-40 flex justify-center items-center z-10'>
+        <div className='bg-white p-4 py-6 m-1 rounded w-full max-w-sm'>
+            <h2 className='font-semibold'>Profile Details</h2>
+            <p className='text-sm '>Edit user details</p>
+
+            <form className='grid gap-3 mt-3' onSubmit={handleSubmit}>
+                <div className='flex flex-col gap-1'>
+                    <label htmlFor='name'>Name:</label>
+                    <input
+                        type='text'
+                        name='name'
+                        id='name'
+                        value={userData.name}
+                        onChange={handleOnChange}
+                        className='w-full py-1 px-2 focus:outline-primary border-0.5'
+                    />
+                </div>
+
+                <div>
+                    <div>Photo:</div>
+                    <div className='my-1 flex items-center gap-4'>
+                        <Avatar
+                            width={40}
+                            height={40}
+                            profile_pic={userData?.profile_pic}
+                            name={data?.name}
+                        />
+                        <label htmlFor='profile_pic'>
+                        <button className='font-semibold' onClick={handleOpenUploadPhoto}>Change Photo</button>
+                        <input
+                            type='file'
+                            id='profile_pic'
+                            className='hidden'
+                            onChange={handleUploadPhoto}
+                            ref={uploadPhotoRef}
+                        />
+                        </label>
+                    </div>
+                </div>
+                <div className='flex gap-2 w-fit ml-auto '>
+                    <button onClick={onclose} className='border-primary border text-primary px-4 py-1 rounded hover:bg-primary hover:text-white'>Cancel</button>
+                    <button onClick={handleSubmit} className='border-primary bg-primary text-white border px-4 py-1 rounded hover:bg-secondary'>Save</button>
+                </div>
+            </form>
+        </div>
     </div>
   )
 }
 
-export default EditUserPopup
+export default React.memo(EditUserDetails)
