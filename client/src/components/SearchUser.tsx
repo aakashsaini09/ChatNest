@@ -1,19 +1,43 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { IoSearchOutline } from "react-icons/io5"
 import UserSearchCard from "./UserSearchCard"
+import toast from "react-hot-toast"
+import axios from "axios"
 const SearchUser: React.FC<any> = ({ onClose }) => {
     const [searchUser, setsearchUser] = useState([])
     const [loading, setloading] = useState(true)
+    const [search, setsearch] = useState("")
+    const url = `${import.meta.env.VITE_APP_BACKEND_URL}/search-user`
     if(searchUser.length ==20){
         setloading(false)
         setsearchUser([])
         onClose
     }
+    const handleSearch = async() =>{
+        setloading(true)
+        try {
+            const res = await axios.post(url, {
+                search: search
+            })
+            setsearchUser(res.data.data)
+            console.log("searchUser: ", searchUser)
+            setloading(false)
+        } catch (err) {
+            toast.error("Something went wrong.")
+            console.log("Error: ", err)
+            setloading(false)
+        }
+    }
+    useEffect(() => {
+      handleSearch()
+    }, [search])
   return (
     <div className="fixed top-0 bottom-0 left-0 right-0 bg-slate-700 bg-opacity-40 p-2">
       <div className="w-full max-w-lg mx-auto mt-10">
         <div className="bg-white rounded h-14 overflow-hidden flex">
             <input 
+                value={search}
+                onChange={(e)=>setsearch(e.target.value)}
                 type="text" 
                 placeholder="search user by name, email..."
                 className="w-full outline-none py-2 h-full px-4" 
