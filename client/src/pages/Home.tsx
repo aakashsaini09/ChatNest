@@ -5,7 +5,7 @@ import { RootState } from '../redux/store';
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useEffect } from "react";
-import { logout, setUser } from "../redux/userSlice";
+import { logout, setOnlineUser, setUser } from "../redux/userSlice";
 import Sidebar from "../components/Sidebar";
 import io from 'socket.io-client'
 const Home = () => {
@@ -14,7 +14,8 @@ const Home = () => {
   const loaction = useLocation()
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  useSelector((state: RootState) => state.user);
+  // @ts-ignore
+  const user = useSelector((state: RootState) => state.user);
   const getUserInfo = async() => {
     try {
       const res = await axios({
@@ -40,6 +41,9 @@ const Home = () => {
       auth: {
         token: localStorage.getItem('token')
       }
+    })
+    socketConnection.on('onlineuser', (data)=>{
+      dispatch(setOnlineUser(data))
     })
     return () => {
       socketConnection.disconnect()

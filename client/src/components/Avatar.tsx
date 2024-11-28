@@ -1,8 +1,18 @@
 import { PiUserCircle } from "react-icons/pi";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
-const Avatar = ({ userId, name, profile_pic, width, height }: any) => {
+interface userTypeDefine{
+  userId: String,
+  name: String,
+  profile_pic: string,
+  width: number,
+  height: number
+}
+const Avatar = ({ userId, name, profile_pic, width, height }: userTypeDefine) => {
   let avatarName = "";
-  
+  const onlineUser = useSelector((state: RootState) => state.user.onlineUser);
+  // const onlineUser = useSelector(state => state?.user?.onlineUser)
   if (name) {
     const splitName = name?.split(" ");
     if (splitName.length > 1) {
@@ -29,13 +39,13 @@ const Avatar = ({ userId, name, profile_pic, width, height }: any) => {
     width: `${width}px`,
     height: `${height}px`,
   };
-
+  const isActive = onlineUser.includes(userId)
   return (
     <div className="text-slate-800 rounded-full font-bold relative">
       {profile_pic ? (
         <img
           src={profile_pic}
-          alt={name}
+          alt="Not found"
           className="overflow-hidden rounded-full"
           style={sizeStyle} // Use inline styles for width and height
         />
@@ -48,6 +58,9 @@ const Avatar = ({ userId, name, profile_pic, width, height }: any) => {
         </div>
       ) : (
         <PiUserCircle size={width} />
+      )}
+      {isActive && (
+        <div className="bg-green-600 z-10 p-1 rounded-full absolute bottom-1 -right-0.5"></div>
       )}
     </div>
   );

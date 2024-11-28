@@ -6,7 +6,6 @@ interface UserSearchCardProps {
   onClose: any
 }
 const UserSearchCard: React.FC<UserSearchCardProps> = ({ user, onClose }) => {
-  console.log("user: ", user)
   return (
     <Link to={"/"+user._id} onClick={onClose} className="flex items-center gap-3 p-2 lg:p-4 border border-transparent border-b-slate-200 hover:border hover:border-primary">
       <div>
@@ -14,6 +13,8 @@ const UserSearchCard: React.FC<UserSearchCardProps> = ({ user, onClose }) => {
           width={50}
           height={50}
           name={user?.name}
+          profile_pic={user?.profile_pic}
+          userId={user?._id}
           />
       </div>
       <div>

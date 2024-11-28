@@ -1,6 +1,7 @@
 import express from 'express'
 import { Server} from 'socket.io'
 import http from 'http'
+import { extractUserInfo } from '../helper/ExtractToken.js'
 const app = express()
 
 const server = http.createServer(app)
@@ -10,12 +11,19 @@ const io = new Server(server, {
         credentials: true,
     }
 })
-io.on('connection', (socket) => {
+const onlineUser = new Set()
+io.on('connection', async(socket) => {
     console.log("connected User", socket.id)
-    const token = socket.handshake.auth.token
-    console.log("token", token)
+    const token = await socket.handshake.auth.token
+    // get user info
+    const user =  await extractUserInfo(token)
+    // Create a room
+    socket.join(user?._id)
+    onlineUser.add(user?._id)
+    io.emit('onlineuser', Array.from(onlineUser))
 
-    io.on('disconnect', () => {
+    socket.on('disconnect', () => {
+        onlineUser.delete(user?._id)
         console.log("disconnected User: ", socket.id)
     })
 })

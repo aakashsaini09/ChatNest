@@ -1,17 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit'
 export interface CounterState {
   _id: String,
-  name: String,
+  name: string,
   email: String,
-  profile_pic: String,
-  token: String
+  profile_pic: string,
+  token: String,
+  onlineUser: any
 }
 const initialState: CounterState = {
   _id: "",
   name: "",
   email: "",
   profile_pic: "",
-  token: ""
+  token: "",
+  onlineUser: []
 }
 export const userSlice = createSlice({
   name: 'user',
@@ -33,9 +35,12 @@ export const userSlice = createSlice({
         state.email = ""
         state.profile_pic = ""
         state.token = ""
+    },
+    setOnlineUser: (state, action) => {
+      state.onlineUser = action.payload
     }
   },
 })
-export const { setUser, setToken, logout } = userSlice.actions
+export const { setUser, setToken, logout, setOnlineUser } = userSlice.actions
 export default userSlice.reducer
 
