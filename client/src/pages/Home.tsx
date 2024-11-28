@@ -7,8 +7,10 @@ import toast from "react-hot-toast";
 import { useEffect } from "react";
 import { logout, setUser } from "../redux/userSlice";
 import Sidebar from "../components/Sidebar";
+import io from 'socket.io-client'
 const Home = () => {
   const url = `${import.meta.env.VITE_APP_BACKEND_URL}/user-details`
+  const SOCKETURL = import.meta.env.VITE_APP_BACKEND_SOCKET
   const loaction = useLocation()
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -33,6 +35,17 @@ const Home = () => {
   useEffect(() => {
     getUserInfo()
   }, [])
+  useEffect(() => {
+    const socketConnection = io(SOCKETURL, {
+      auth: {
+        token: localStorage.getItem('token')
+      }
+    })
+    return () => {
+      socketConnection.disconnect()
+    }
+  }, [])
+  
   const basePath = loaction.pathname === '/'
   return (
     <div className="grid grid-cols-[300px,1fr] h-screen max-h-screen">
