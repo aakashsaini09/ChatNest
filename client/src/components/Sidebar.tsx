@@ -13,7 +13,7 @@ const Sidebar = () => {
   const user = useSelector((state: RootState) => state.user);
   const [editUser, seteditUser] = useState(false)
   const [allUsers, setallUsers] = useState([])
-  const [openSearchUser, setopenSearchUser] = useState(true)
+  const [openSearchUser, setopenSearchUser] = useState(false)
   if(allUsers.length ==300){
     setallUsers([])
   }

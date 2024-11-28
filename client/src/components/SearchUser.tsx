@@ -3,9 +3,10 @@ import { IoSearchOutline } from "react-icons/io5"
 import UserSearchCard from "./UserSearchCard"
 import toast from "react-hot-toast"
 import axios from "axios"
+import { IoClose } from "react-icons/io5"
 const SearchUser: React.FC<any> = ({ onClose }) => {
     const [searchUser, setsearchUser] = useState([])
-    const [loading, setloading] = useState(true)
+    const [loading, setloading] = useState(false)
     const [search, setsearch] = useState("")
     const url = `${import.meta.env.VITE_APP_BACKEND_URL}/search-user`
     if(searchUser.length ==20){
@@ -57,11 +58,16 @@ const SearchUser: React.FC<any> = ({ onClose }) => {
             {searchUser.length !== 0 && !loading && (
                 searchUser.map((user, index) => {
                     return (
-                        <UserSearchCard user={user} key={index}/>
+                        <UserSearchCard onClose={onClose} user={user} key={index}/>
                     )
                 })
             )}
         </div>
+      </div>
+      <div className="absolute top-0 right-0 text-2xl p-2 lg:text-4xl hover:text-purple-800" onClick={onClose}>
+        <button>
+            <IoClose />
+        </button>
       </div>
     </div>
   )

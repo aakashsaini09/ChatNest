@@ -38,7 +38,7 @@ const Home = () => {
     <div className="grid grid-cols-[300px,1fr] h-screen max-h-screen">
       <section className={`bg-white ${!basePath && 'hidden'} lg:block`}><Sidebar/></section>
       <section className={`${basePath && 'hidden'}`}><Outlet/></section>
-      <div className="lg:flex justify-center items-center flex-col gap-2 hidden">
+      <div className={`lg:flex justify-center items-center flex-col gap-2 hidden ${basePath ? "hidden" : "lg:flex"}`}>
         <div>
           <img src={logo} width={250} alt="" />
         </div>
