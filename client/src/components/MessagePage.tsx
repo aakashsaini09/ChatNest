@@ -5,8 +5,17 @@ import { RootState } from "../redux/store"
 import Avatar from "./Avatar"
 import { HiDotsVertical } from "react-icons/hi"
 import { FaAngleLeft } from "react-icons/fa"
+import { FaPlus } from "react-icons/fa"
+import { FaImage, FaVideo } from "react-icons/fa6"
+import uploadFile from "../helpers/uploadFiles"
 
 const MessagePage = () => {
+  const [openImgVidUpload, setopenImgVidUpload] = useState(false)
+  const [message, setmessage] = useState({
+    text: '',
+    imageUrl: '',
+    videoUrl: ''
+  })
   const params = useParams()
   const user = useSelector((state: RootState) => state.user)
   const [userData, setuserData] = useState({
@@ -17,7 +26,6 @@ const MessagePage = () => {
     online: false
   })
   const socketConnection = useSelector((state: RootState )=> state?.user?.socketConnection)
-  console.log("socketConnection: ", socketConnection)
   useEffect(() => {
     if(socketConnection){
       socketConnection.emit('message-page', params.userId)
@@ -27,7 +35,36 @@ const MessagePage = () => {
       })
     }
   }, [socketConnection, params?.userId, user])
-  
+  const handleUploadImgVid = () => {
+    setopenImgVidUpload(pre => !pre)
+  }
+  const handleUploadImg = async(e:any) => {
+    const file = e.target.files[0]
+
+        const uploadPhoto = await uploadFile(file)
+        setmessage(pre => {
+          return{
+            ...pre, imageUrl: uploadPhoto
+          }
+        })
+        // setuserData((preve)=>{
+        // return{
+        //     ...preve,
+        //     profile_pic : uploadPhoto?.url
+        // }
+        // })
+  }
+  const handleUploadVid = async(e: any) => {
+    const file = e.target.files[0]
+
+        const uploadVideo = await uploadFile(file)
+        setmessage(pre => {
+          return{
+            ...pre, videoUrl: uploadVideo
+          }
+        })
+  }
+
   return (
     <>
       <div>
@@ -54,7 +91,37 @@ const MessagePage = () => {
             <button className="cursor-pointer hover:text-primary"><HiDotsVertical/></button>
           </div>
         </header>
-        <section className="h-[calc(100vh-64px)] bg-purple-600"></section>
+        <section className="h-[calc(100vh-128px)] overflow-x-hidden overflow-y-scroll scrollbar">
+          All messages here
+        </section>
+        <section className="h-16 bg-white flex items-center px-4">
+          <div className="relative">
+            <button onClick={handleUploadImgVid} className="flex justify-center items-center w-11 h-11 rounded-full hover:bg-primary hover:text-white">
+              <FaPlus size={20}/>
+              </button>
+            {/* popup */}
+            {openImgVidUpload && 
+            <div className="bg-white shadow rounded absolute bottom-12 w-36 p-2">
+              <form>
+                <label htmlFor="uploadImage" className="flex items-center p-2 gap-3 hover:bg-slate-300 px-3 cursor-pointer">
+                  <div className="text-purple-600">
+                    <FaImage size={18}/>
+                  </div>
+                  <p>Image</p>
+                </label>
+                <label htmlFor="uploadVideo" className="flex items-center p-2 gap-3 hover:bg-slate-300 px-3 cursor-pointer">
+                  <div className="text-purple-600">
+                    <FaVideo size={18}/>
+                  </div>
+                  <p>Video</p>
+                </label>
+                <input onClick={handleUploadImg} type="file" id="uploadVideo" />
+                <input onClick={handleUploadVid} type="file" id="uploadVideo" />
+              </form>
+            </div>
+            }
+          </div>
+        </section>
       </div>
     </>
   )
