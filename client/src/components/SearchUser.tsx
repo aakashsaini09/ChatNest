@@ -21,7 +21,6 @@ const SearchUser: React.FC<any> = ({ onClose }) => {
                 search: search
             })
             setsearchUser(res.data.data)
-            console.log("searchUser: ", searchUser)
             setloading(false)
         } catch (err) {
             toast.error("Something went wrong.")

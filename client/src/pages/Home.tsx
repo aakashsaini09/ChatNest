@@ -5,7 +5,7 @@ import { RootState } from '../redux/store';
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useEffect } from "react";
-import { logout, setOnlineUser, setUser } from "../redux/userSlice";
+import { logout, setOnlineUser, setSocketConnection, setUser } from "../redux/userSlice";
 import Sidebar from "../components/Sidebar";
 import io from 'socket.io-client'
 const Home = () => {
@@ -45,6 +45,7 @@ const Home = () => {
     socketConnection.on('onlineuser', (data)=>{
       dispatch(setOnlineUser(data))
     })
+    dispatch(setSocketConnection(socketConnection))
     return () => {
       socketConnection.disconnect()
     }

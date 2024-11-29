@@ -5,7 +5,8 @@ export interface CounterState {
   email: String,
   profile_pic: string,
   token: String,
-  onlineUser: any
+  onlineUser: any,
+  socketConnection?: any
 }
 const initialState: CounterState = {
   _id: "",
@@ -13,7 +14,8 @@ const initialState: CounterState = {
   email: "",
   profile_pic: "",
   token: "",
-  onlineUser: []
+  onlineUser: [],
+  socketConnection: null
 }
 export const userSlice = createSlice({
   name: 'user',
@@ -35,12 +37,16 @@ export const userSlice = createSlice({
         state.email = ""
         state.profile_pic = ""
         state.token = ""
+        state.socketConnection = null
     },
     setOnlineUser: (state, action) => {
       state.onlineUser = action.payload
+    },
+    setSocketConnection : (state, action) => {
+      state.socketConnection = action.payload
     }
   },
 })
-export const { setUser, setToken, logout, setOnlineUser } = userSlice.actions
+export const { setUser, setToken, logout, setOnlineUser, setSocketConnection } = userSlice.actions
 export default userSlice.reducer
 

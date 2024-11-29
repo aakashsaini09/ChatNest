@@ -21,7 +21,9 @@ io.on('connection', async(socket) => {
     socket.join(user?._id)
     onlineUser.add(user?._id)
     io.emit('onlineuser', Array.from(onlineUser))
-
+    socket.on('message-page', (userId)=>{
+        console.log("userId is: ", userId)
+    })
     socket.on('disconnect', () => {
         onlineUser.delete(user?._id)
         console.log("disconnected User: ", socket.id)

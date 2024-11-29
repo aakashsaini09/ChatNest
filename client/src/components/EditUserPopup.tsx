@@ -106,6 +106,7 @@ const EditUserDetails = ({onclose, data}:any) => {
                             height={40}
                             profile_pic={userData?.profile_pic}
                             name={data?.name}
+                            userId={data?._id}
                         />
                         <label htmlFor='profile_pic'>
                         <button className='font-semibold' onClick={handleOpenUploadPhoto}>Change Photo</button>
