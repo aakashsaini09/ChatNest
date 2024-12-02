@@ -3,6 +3,7 @@ import { Server} from 'socket.io'
 import http from 'http'
 import { extractUserInfo } from '../helper/ExtractToken.js'
 import UserModel from '../schema/UserSchema.js'
+import { ConversationSchema as ConversationModel, MessageSchema as MessageModel } from '../schema/ConversationSchema.js'
 const app = express()
 
 const server = http.createServer(app)
@@ -23,7 +24,6 @@ io.on('connection', async(socket) => {
     onlineUser.add(user?._id?.toString())
     io.emit('onlineuser', Array.from(onlineUser))
     socket.on('message-page', async (userId)=>{
-        console.log("userId is: ", userId)
         const userDetails = await UserModel.findById(userId).select("-password")
         const payload = {
             _id: userDetails._id,
@@ -33,6 +33,47 @@ io.on('connection', async(socket) => {
             online: onlineUser.has(userId)
         }
         socket.emit('message-user', payload)
+    })
+    // new msg
+    socket.on('new-message', async(data) => {
+        let conversation = await ConversationModel.findOne({
+            "$or" : [
+                { sender : data?.sender, receiver : data?.receiver },
+                { sender : data?.receiver, receiver :  data?.sender}
+            ]
+        })
+
+        //if conversation is not available
+        if(!conversation){
+            const createConversation = await ConversationModel({
+                sender : data?.sender,
+                receiver : data?.receiver
+            })
+            conversation = await createConversation.save()
+        }
+        
+        const message = new MessageModel({
+          text : data.text,
+          imageUrl : data.imageUrl,
+          videoUrl : data.videoUrl,
+          msgByUserId :  data?.msgByUserId,
+        })
+        const saveMessage = await message.save()
+
+        const updateConversation = await ConversationModel.updateOne({ _id : conversation?._id },{
+            "$push" : { messages : saveMessage?._id }
+        })
+
+        const getConversationMessage = await ConversationModel.findOne({
+            "$or" : [
+                { sender : data?.sender, receiver : data?.receiver },
+                { sender : data?.receiver, receiver :  data?.sender}
+            ]
+        }).populate('messages').sort({ updatedAt : -1 })
+        console.log('getConverstationa : ', getConversationMessage)
+        console.log('updateC : ', updateConversation)
+
+        // console.log('data: ', data)
     })
     socket.on('disconnect', () => {
         onlineUser.delete(user?._id)

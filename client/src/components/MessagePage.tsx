@@ -10,7 +10,8 @@ import { FaImage, FaVideo } from "react-icons/fa6"
 import uploadFile from "../helpers/uploadFiles"
 import { IoClose } from "react-icons/io5"
 import Loading from "./Loading"
-
+import bgImg from '../assets/wallapaper.jpeg'
+import { IoMdSend } from "react-icons/io"
 const MessagePage = () => {
   const [openImgVidUpload, setopenImgVidUpload] = useState(false)
   const [loading, setloading] = useState(false)
@@ -33,7 +34,6 @@ const MessagePage = () => {
     if(socketConnection){
       socketConnection.emit('message-page', params.userId)
       socketConnection.on('message-user', (data: any) => {
-        console.log("data: ", data)
         setuserData(data)
       })
     }
@@ -44,7 +44,6 @@ const MessagePage = () => {
   const handleUploadImg = async(e:any) => {
     setloading(true)
     const uploadPhoto = await uploadFile(e.target.files[0])
-    console.log("uploadImg is: ", uploadPhoto)
     setopenImgVidUpload(false)
     setmessage(pre => {
       return{
@@ -72,7 +71,6 @@ const MessagePage = () => {
     // const file = e.target.files[0]
     const uploadVideo = await uploadFile(e.target.files[0])
     setloading(false)
-    console.log("uploadVideo:", uploadVideo)
     setopenImgVidUpload(false)
     setmessage(pre => {
       return{
@@ -82,9 +80,33 @@ const MessagePage = () => {
     setloading(false)
   }
 
+  const handleOnChange = (e: any) => {
+    const { name, value} = e.target
+    setmessage(pre => {
+      return{
+        ...pre,
+        text: value
+      }
+    }) 
+    console.log("message: ", message)
+  }
+  const handleSendMessage = async(e: any) => {
+    e.preventDefault()
+    if(message.text || message.imageUrl || message.videoUrl){
+      if(socketConnection){
+        socketConnection.emit('new-message', {
+          sender: user?._id,
+          receiver: params.userId,
+          text: message.text,
+          imageUrl: message.imageUrl,
+          videoUrl: message.videoUrl
+        })
+      }
+    }
+  }
   return (
     <>
-      <div>
+      <div style={{backgroundImage: `url(${bgImg})`}} className="bg-no-repeat bg-cover">
         <header className="static top-0 h-16 bg-white flex justify-between items-center px-4">
           <div className="flex items-center gap-4">
             <Link to={'/'} className="lg:hidden">
@@ -109,7 +131,7 @@ const MessagePage = () => {
           </div>
         </header>
         {/* show msg here */}
-        <section className="h-[calc(100vh-128px)] overflow-x-hidden overflow-y-scroll scrollbar relative">
+        <section className="h-[calc(100vh-128px)] overflow-x-hidden bg-slate-200 bg-opacity-50 overflow-y-scroll scrollbar relative">
           {message.imageUrl && (
             <div className="w-full h-full bg-slate-700 bg-opacity-30 flex justify-center items-center rounded overflow-hidden">
             <div onClick={handleClearUploadImg} className="w-fit p-2 absolute top-0 right-0 cursor-pointer hover:text-red-800">
@@ -171,6 +193,19 @@ const MessagePage = () => {
             </div>
             }
           </div>
+          {/* input Box here */}
+          <form className="h-full w-full flex gap-2" onSubmit={handleSendMessage}>
+            <input 
+              type="text"
+              placeholder="Enter your message..."
+              className="py-1 px-4 outline-none w-full h-full"
+              value={message.text}
+              onChange={handleOnChange}
+               />
+               <button className="text-primary hover:text-secondary">
+                <IoMdSend size={25}/>
+              </button>
+          </form>
         </section>
       </div>
     </>
