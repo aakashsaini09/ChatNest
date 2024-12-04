@@ -88,7 +88,6 @@ const MessagePage = () => {
         text: value
       }
     }) 
-    console.log("message: ", message)
   }
   const handleSendMessage = async(e: any) => {
     e.preventDefault()
@@ -99,7 +98,8 @@ const MessagePage = () => {
           receiver: params.userId,
           text: message.text,
           imageUrl: message.imageUrl,
-          videoUrl: message.videoUrl
+          videoUrl: message.videoUrl,
+          msgByUserId : user?._id
         })
       }
     }

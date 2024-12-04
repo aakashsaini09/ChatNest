@@ -3,7 +3,7 @@ import { Server} from 'socket.io'
 import http from 'http'
 import { extractUserInfo } from '../helper/ExtractToken.js'
 import UserModel from '../schema/UserSchema.js'
-import { ConversationSchema as ConversationModel, MessageSchema as MessageModel } from '../schema/ConversationSchema.js'
+import { ConversationModel, MessageModel } from '../schema/ConversationSchema.js'
 const app = express()
 
 const server = http.createServer(app)
@@ -71,9 +71,9 @@ io.on('connection', async(socket) => {
             ]
         }).populate('messages').sort({ updatedAt : -1 })
         console.log('getConverstationa : ', getConversationMessage)
-        console.log('updateC : ', updateConversation)
+        // console.log('updateC : ', updateConversation)
 
-        // console.log('data: ', data)
+        // console.log('conversation: ', conversation)
     })
     socket.on('disconnect', () => {
         onlineUser.delete(user?._id)
