@@ -70,11 +70,19 @@ io.on('connection', async(socket) => {
                 { sender : data?.receiver, receiver :  data?.sender}
             ]
         }).populate('messages').sort({ updatedAt : -1 })
-        console.log('getConverstationa : ', getConversationMessage)
-        // console.log('updateC : ', updateConversation)
+        io.to(data?.sender).emit('message',getConversationMessage?.messages || [])
+        io.to(data?.receiver).emit('message',getConversationMessage?.messages || [])
 
-        // console.log('conversation: ', conversation)
-    })
+        //send conversation
+        // const conversationSender = await getConversation(data?.sender)
+        // const conversationReceiver = await getConversation(data?.receiver)
+
+        // io.to(data?.sender).emit('conversation',conversationSender)
+        // io.to(data?.receiver).emit('conversation',conversationReceiver)
+
+        // console.log('getConverstationa : ', getConversationMessage)
+        // console.log('updateC : ', updateConversation)
+      })
     socket.on('disconnect', () => {
         onlineUser.delete(user?._id)
         console.log("disconnected User: ", socket.id)

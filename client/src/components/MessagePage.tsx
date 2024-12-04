@@ -12,9 +12,19 @@ import { IoClose } from "react-icons/io5"
 import Loading from "./Loading"
 import bgImg from '../assets/wallapaper.jpeg'
 import { IoMdSend } from "react-icons/io"
+
+interface messageInterface{
+  createdAt: string,
+imageUrl: string,
+seen: boolean,
+text: string,
+videoUrl:string,
+_id: string
+}
 const MessagePage = () => {
   const [openImgVidUpload, setopenImgVidUpload] = useState(false)
   const [loading, setloading] = useState(false)
+  const [allMessages, setallMessages] = useState([])
   const [message, setmessage] = useState({
     text: '',
     imageUrl: '',
@@ -36,6 +46,11 @@ const MessagePage = () => {
       socketConnection.on('message-user', (data: any) => {
         setuserData(data)
       })
+      socketConnection.on('message', (data: any) => {
+        console.log("message here: ", data)
+        setallMessages(data)
+      })
+
     }
   }, [socketConnection, params?.userId, user])
   const handleUploadImgVid = () => {
@@ -101,6 +116,11 @@ const MessagePage = () => {
           videoUrl: message.videoUrl,
           msgByUserId : user?._id
         })
+        setmessage({
+          text: '',
+          imageUrl: '',
+          videoUrl: ''
+        })
       }
     }
   }
@@ -164,7 +184,16 @@ const MessagePage = () => {
           {loading && (
             <div className="w-full h-full flex justify-center items-center"><Loading/></div>
           )}
-          All messages here
+          {/* All messages here */}
+          <div>
+            {allMessages.map((msg:messageInterface, index) => {
+              return(
+                <div>
+                  <p>{msg.text}</p>
+                </div>
+              )
+            })}
+          </div>
         </section>
         <section className="h-16 bg-white flex items-center px-4">
           <div className="relative">
