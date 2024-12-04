@@ -20,7 +20,7 @@ io.on('connection', async(socket) => {
     // get user info
     const user =  await extractUserInfo(token)
     // Create a room
-    socket.join(user?._id)
+    socket.join(user?._id.toString())
     onlineUser.add(user?._id?.toString())
     io.emit('onlineuser', Array.from(onlineUser))
     socket.on('message-page', async (userId)=>{

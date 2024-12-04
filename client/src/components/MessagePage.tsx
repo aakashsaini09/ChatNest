@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useSelector } from "react-redux"
 import { Link, useParams } from "react-router-dom"
 import { RootState } from "../redux/store"
@@ -12,19 +12,22 @@ import { IoClose } from "react-icons/io5"
 import Loading from "./Loading"
 import bgImg from '../assets/wallapaper.jpeg'
 import { IoMdSend } from "react-icons/io"
+import moment from "moment"
 
 interface messageInterface{
-  createdAt: string,
+createdAt: any,
 imageUrl: string,
 seen: boolean,
 text: string,
 videoUrl:string,
-_id: string
+_id: string,
+msgByUserId: string
 }
 const MessagePage = () => {
   const [openImgVidUpload, setopenImgVidUpload] = useState(false)
   const [loading, setloading] = useState(false)
   const [allMessages, setallMessages] = useState([])
+  const currentMsgUse = useRef<HTMLDivElement>(null)
   const [message, setmessage] = useState({
     text: '',
     imageUrl: '',
@@ -47,26 +50,45 @@ const MessagePage = () => {
         setuserData(data)
       })
       socketConnection.on('message', (data: any) => {
-        console.log("message here: ", data)
+
         setallMessages(data)
       })
 
     }
   }, [socketConnection, params?.userId, user])
+  useEffect(() => {
+    if(currentMsgUse.current){
+      currentMsgUse.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
+    }
+  }, [allMessages])
+  
   const handleUploadImgVid = () => {
     setopenImgVidUpload(pre => !pre)
   }
-  const handleUploadImg = async(e:any) => {
-    setloading(true)
-    const uploadPhoto = await uploadFile(e.target.files[0])
-    setopenImgVidUpload(false)
-    setmessage(pre => {
-      return{
-        ...pre, imageUrl: uploadPhoto?.url
-      }
-    })
-    setloading(false)
-  }
+  const handleUploadImg = async (e: any) => {
+    setloading(true);
+    if (!e.target.files || e.target.files.length === 0) {
+      console.log("No file selected");
+      return; // Exit if no file is selected
+    }
+  
+  
+    try {
+      const uploadPhoto = await uploadFile(e.target.files[0]);
+      console.log("Uploaded photo is: ", uploadPhoto.url);
+  
+      setopenImgVidUpload(false);
+      setmessage((pre) => ({
+        ...pre,
+        imageUrl: uploadPhoto?.url,
+      }));
+    } catch (error) {
+      console.error("Error uploading file: ", error);
+    } finally {
+      setloading(false);
+    }
+  };
+  
   const handleClearUploadImg = () => {
         setmessage(pre => {
           return{
@@ -96,6 +118,7 @@ const MessagePage = () => {
   }
 
   const handleOnChange = (e: any) => {
+    // @ts-ignore
     const { name, value} = e.target
     setmessage(pre => {
       return{
@@ -152,8 +175,28 @@ const MessagePage = () => {
         </header>
         {/* show msg here */}
         <section className="h-[calc(100vh-128px)] overflow-x-hidden bg-slate-200 bg-opacity-50 overflow-y-scroll scrollbar relative">
+         
+          {/* All messages here */}
+          <div className="flex flex-col gap-2 py-2 mx-2" ref={currentMsgUse}>
+            {allMessages.map((msg:messageInterface, index) => {
+              return(
+                <div className={`bg-white p-1 max-w-[280px] md:max-w-sm lg:max-w-md py-2 rounded w-fit ${user._id ===msg.msgByUserId ? 'ml-auto bg-teal-100' : ''}`}key={index}>
+                  <div className="w-full">
+                    {msg?.imageUrl && (
+                      <img
+                        src={msg?.imageUrl}
+                        className="w-full h-full object-scale-down"
+                      />
+                    )}
+                  </div>
+                  <p className="px-2">{msg.text}</p>
+                  <p className="text-xs ml-auto w-fit">{moment(msg.createdAt).format('hh:mm')}</p>
+                </div>
+              )
+            })}
+          </div>
           {message.imageUrl && (
-            <div className="w-full h-full bg-slate-700 bg-opacity-30 flex justify-center items-center rounded overflow-hidden">
+            <div className="w-full h-full bg-slate-700 sticky bottom-0 bg-opacity-30 flex justify-center items-center rounded overflow-hidden">
             <div onClick={handleClearUploadImg} className="w-fit p-2 absolute top-0 right-0 cursor-pointer hover:text-red-800">
               <IoClose size={30}/>
             </div>
@@ -166,7 +209,7 @@ const MessagePage = () => {
           </div>
           )}
           {message.videoUrl && (
-            <div className="w-full h-full bg-slate-700 bg-opacity-30 flex justify-center items-center rounded overflow-hidden">
+            <div className="w-full h-full sticky bottom-0 bg-slate-700 bg-opacity-30 flex justify-center items-center rounded overflow-hidden">
             <div onClick={handleClearUploadVid} className="w-fit p-2 absolute top-0 right-0 cursor-pointer hover:text-red-800">
               <IoClose size={30}/>
             </div>
@@ -182,18 +225,8 @@ const MessagePage = () => {
           </div>
           )}
           {loading && (
-            <div className="w-full h-full flex justify-center items-center"><Loading/></div>
+            <div className="w-full h-full sticky bottom-0 flex justify-center items-center"><Loading/></div>
           )}
-          {/* All messages here */}
-          <div>
-            {allMessages.map((msg:messageInterface, index) => {
-              return(
-                <div>
-                  <p>{msg.text}</p>
-                </div>
-              )
-            })}
-          </div>
         </section>
         <section className="h-16 bg-white flex items-center px-4">
           <div className="relative">
