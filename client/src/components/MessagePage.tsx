@@ -188,6 +188,13 @@ const MessagePage = () => {
                         className="w-full h-full object-scale-down"
                       />
                     )}
+                    {msg?.videoUrl && (
+                      <video
+                        src={msg?.videoUrl}
+                        className="w-full h-full object-scale-down"
+                        controls
+                      />
+                    )}
                   </div>
                   <p className="px-2">{msg.text}</p>
                   <p className="text-xs ml-auto w-fit">{moment(msg.createdAt).format('hh:mm')}</p>
