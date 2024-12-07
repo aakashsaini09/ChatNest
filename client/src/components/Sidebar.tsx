@@ -5,7 +5,7 @@ import { BiLogOut } from "react-icons/bi"
 import Avatar from "./Avatar"
 import { useSelector } from "react-redux"
 import { RootState } from "../redux/store"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import EditUserPopup from "./EditUserPopup"
 import { FiArrowUpLeft } from "react-icons/fi"
 import SearchUser from "./SearchUser"
@@ -14,9 +14,37 @@ const Sidebar = () => {
   const [editUser, seteditUser] = useState(false)
   const [allUsers, setallUsers] = useState([])
   const [openSearchUser, setopenSearchUser] = useState(false)
-  if(allUsers.length ==300){
-    setallUsers([])
-  }
+  const socketConnection = useSelector((state: RootState )=> state?.user?.socketConnection)
+  useEffect(() => {
+    if(socketConnection){
+      socketConnection.emit('sidebar', user._id)
+      socketConnection.on('conversation', (data : any)=> {
+        const conversationUserData = data.map((conversationUser:any) =>{
+          if(conversationUser?.sender?._id === conversationUser?.receiver?._id){
+            return{
+              ...conversationUser,
+              userDetails: conversationUser?.sender
+            }
+          }
+          else if(conversationUser?.receiver?._id !== user?._id){
+            return{
+              ...conversationUser,
+              userDetails: conversationUser?.receiver
+            }
+          }
+          else{
+            return{
+              ...conversationUser,
+              userDetails: conversationUser?.sender
+            }
+          }
+        })
+        setallUsers(conversationUserData)
+        console.log("conversationUserData: ", conversationUserData)
+      })
+    }
+  }, [socketConnection, user])
+  
   return (
     <>
       <div className="w-full h-full grid grid-cols-[48px,1fr] bg-white">
@@ -54,6 +82,31 @@ const Sidebar = () => {
                 <p className="text-lg text-center text-slate-400">Explore Users to start a conversation.</p>
               </div>
             )}
+            {
+              allUsers.map((conv: any, index) => {
+                return (
+                  <div key={index} className="flex items-center gap-2">
+                    <div>
+                      <div>
+                        <Avatar
+                          profile_pic={conv?.userDetails?.profile_pic}
+                          name={conv?.userDetails?.name}
+                          height={40}
+                          width={40}
+                          userId={conv?.userDetails?._id}
+                        />
+                      </div>
+                      <div>
+                        <h3 className="text-ellipsis line-clamp-1">{conv?.userDetails?.name}</h3>
+                        <div>
+                          <p>{conv?.lastMsg?.text}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })
+            }
           </div>
         </div>
         {editUser && (

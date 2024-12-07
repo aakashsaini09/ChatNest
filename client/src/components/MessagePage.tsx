@@ -56,11 +56,17 @@ const MessagePage = () => {
 
     }
   }, [socketConnection, params?.userId, user])
-  useEffect(() => {
+  // useEffect(() => {
+  //   if(currentMsgUse.current){
+  //     currentMsgUse.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
+  //   }
+  // }, [allMessages])
+  useEffect(()=>{
     if(currentMsgUse.current){
-      currentMsgUse.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
+        currentMsgUse.current.scrollIntoView({behavior : 'smooth', block : 'end'})
     }
-  }, [allMessages])
+},[allMessages])
+
   
   const handleUploadImgVid = () => {
     setopenImgVidUpload(pre => !pre)
