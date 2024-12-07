@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom"
 import { BiLogOut } from "react-icons/bi"
 import Avatar from "./Avatar"
 import { useSelector } from "react-redux"
+import { FaImage, FaVideo } from "react-icons/fa6"
 import { RootState } from "../redux/store"
 import { useEffect, useState } from "react"
 import EditUserPopup from "./EditUserPopup"
@@ -86,8 +87,7 @@ const Sidebar = () => {
               allUsers.map((conv: any, index) => {
                 return (
                   <div key={index} className="flex items-center gap-2">
-                    <div>
-                      <div>
+                    <div className="flex">
                         <Avatar
                           profile_pic={conv?.userDetails?.profile_pic}
                           name={conv?.userDetails?.name}
@@ -95,11 +95,18 @@ const Sidebar = () => {
                           width={40}
                           userId={conv?.userDetails?._id}
                         />
-                      </div>
                       <div>
                         <h3 className="text-ellipsis line-clamp-1">{conv?.userDetails?.name}</h3>
-                        <div>
-                          <p>{conv?.lastMsg?.text}</p>
+                        <div className="text-slate-500 text-xs">
+                          <div>
+                            {conv?.lastMsg?.imageUrl && (
+                              <div className="flex items-center gap-2">
+                               <span className="text-purple-600"> <FaImage size={18}/></span>
+                               <span>Image</span>
+                              </div>
+                            )}
+                          </div>
+                          <p className="">{conv?.lastMsg?.text}</p>
                         </div>
                       </div>
                     </div>

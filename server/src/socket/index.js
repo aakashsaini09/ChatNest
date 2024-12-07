@@ -41,7 +41,7 @@ io.on('connection', async(socket) => {
             ]
         }).populate('messages').sort({ updatedAt : -1 })
 
-        socket.emit('message', getConversationMessage.messages)
+        socket.emit('message', getConversationMessage?.messages || [])
     })
     // new msg
     socket.on('new-message', async(data) => {
