@@ -20,6 +20,7 @@ const Sidebar = () => {
     if(socketConnection){
       socketConnection.emit('sidebar', user._id)
       socketConnection.on('conversation', (data : any)=> {
+        // console.log("data is: ", data)
         const conversationUserData = data.map((conversationUser:any) =>{
           if(conversationUser?.sender?._id === conversationUser?.receiver?._id){
             return{
@@ -86,7 +87,7 @@ const Sidebar = () => {
             {
               allUsers.map((conv: any, index) => {
                 return (
-                  <div key={index} className="flex items-center gap-2">
+                  <NavLink to={'/'+conv?.userDetails?._id} key={index} className="flex items-center gap-2 py-3 px-2 border border-transparent hover:border-gray-500 cursor-pointer hover:bg-gray-100">
                     <div className="flex">
                         <Avatar
                           profile_pic={conv?.userDetails?.profile_pic}
@@ -96,21 +97,28 @@ const Sidebar = () => {
                           userId={conv?.userDetails?._id}
                         />
                       <div>
-                        <h3 className="text-ellipsis line-clamp-1">{conv?.userDetails?.name}</h3>
-                        <div className="text-slate-500 text-xs">
+                        <h3 className="text-ellipsis line-clamp-1 text-sm font-semibold">{conv?.userDetails?.name}</h3>
+                        <div className="text-slate-500 text-xs flex items-center gap-1">
                           <div>
                             {conv?.lastMsg?.imageUrl && (
                               <div className="flex items-center gap-2">
                                <span className="text-purple-600"> <FaImage size={18}/></span>
-                               <span>Image</span>
+                               {!conv?.lastMsg?.text && <span>Image</span>}
+                              </div>
+                            )}
+                            {conv?.lastMsg?.videoUrl && (
+                              <div className="flex items-center gap-2">
+                               <span className="text-purple-600"> <FaVideo size={18}/></span>
+                               {!conv?.lastMsg?.text && <span>Video</span>}
                               </div>
                             )}
                           </div>
-                          <p className="">{conv?.lastMsg?.text}</p>
+                          <p className="text-ellipsis line-clamp-1">{conv?.lastMsg?.text}</p>
                         </div>
                       </div>
                     </div>
-                  </div>
+                        <p className="text-xs h-6 w-6 flex justify-center items-center ml-auto p-1 bg-primary text-white rounded-full font-semibold">{conv?.unseenMsg}</p>
+                  </NavLink>
                 )
               })
             }

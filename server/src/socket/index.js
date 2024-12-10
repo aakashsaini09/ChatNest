@@ -4,6 +4,7 @@ import http from 'http'
 import { extractUserInfo } from '../helper/ExtractToken.js'
 import UserModel from '../schema/UserSchema.js'
 import { ConversationModel, MessageModel } from '../schema/ConversationSchema.js'
+import GetConverSationFunction from '../helper/GetConversations.js'
 const app = express()
 
 const server = http.createServer(app)
@@ -20,7 +21,7 @@ io.on('connection', async(socket) => {
     // get user info
     const user =  await extractUserInfo(token)
     // Create a room
-    socket.join(user?._id.toString())
+    socket.join(user?._id?.toString())
     onlineUser.add(user?._id?.toString())
     io.emit('onlineuser', Array.from(onlineUser))
     socket.on('message-page', async (userId)=>{
@@ -81,13 +82,12 @@ io.on('connection', async(socket) => {
         }).populate('messages').sort({ updatedAt : -1 })
         io.to(data?.sender).emit('message',getConversationMessage?.messages || [])
         io.to(data?.receiver).emit('message',getConversationMessage?.messages || [])
-
         //send conversation
-        // const conversationSender = await getConversation(data?.sender)
-        // const conversationReceiver = await getConversation(data?.receiver)
+        const conversationSender = await GetConverSationFunction(data?.sender)
+        const conversationReceiver = await GetConverSationFunction(data?.receiver)
 
-        // io.to(data?.sender).emit('conversation',conversationSender)
-        // io.to(data?.receiver).emit('conversation',conversationReceiver)
+        io.to(data?.sender).emit('conversation',conversationSender)
+        io.to(data?.receiver).emit('conversation',conversationReceiver)
 
         // console.log('getConverstationa : ', getConversationMessage)
         // console.log('updateC : ', updateConversation)
@@ -95,27 +95,9 @@ io.on('connection', async(socket) => {
 
     //   sidebar
     socket.on('sidebar', async(currentUserId) => {
-        // console.log("sidebar Id: ", currentUserId)
-        if(currentUserId){
-            const currentUserConversation = await ConversationModel.find({
-                "$or": [
-                    { sender: currentUserId},
-                    { receiver: currentUserId}
-                ]
-            }).sort({updatedAt : -1}).populate('messages').populate('sender').populate('receiver')
-            // console.log("currentUserConversation", currentUserConversation)
-            const finalMsg = currentUserConversation.map((conv) => {
-                const conutUnseenMsg = conv.messages.reduce((prev, curr) => prev + (curr.seen ? 0 : 1), 0)
-                return{
-                    _id: conv?._id,
-                    sender: conv?.sender,
-                    receiver: conv?.receiver,
-                    unseenMsg: conutUnseenMsg,
-                    lastMsg: conv.messages[conv?.messages?.length - 1]
-                }
-            })
-            socket.emit('conversation', finalMsg)
-        }
+       const conversation = await GetConverSationFunction(currentUserId)
+    //    console.log("conversation: ", conversation)
+       socket.emit('conversation', conversation)
     })
     socket.on('disconnect', () => {
         onlineUser.delete(user?._id)
