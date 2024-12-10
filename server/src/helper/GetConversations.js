@@ -10,12 +10,21 @@ const GetConverSationFunction = async(currentUserId) => {
         }).sort({updatedAt : -1}).populate('messages').populate('sender').populate('receiver')
         // console.log("currentUserConversation", currentUserConversation)
         const finalMsg = currentUserConversation.map((conv) => {
-            const conutUnseenMsg = conv.messages.reduce((prev, curr) => prev + (curr.seen ? 0 : 1), 0)
+            const countUnseenMsg = conv?.messages?.reduce((preve,curr) => {
+                const msgByUserId = curr?.msgByUserId?.toString()
+
+                if(msgByUserId !== currentUserId){
+                    return  preve + (curr?.seen ? 0 : 1)
+                }else{
+                    return preve
+                }
+             
+            },0)
             return{
                 _id: conv?._id,
                 sender: conv?.sender,
                 receiver: conv?.receiver,
-                unseenMsg: conutUnseenMsg,
+                unseenMsg: countUnseenMsg,
                 lastMsg: conv.messages[conv?.messages?.length - 1]
             }
         })

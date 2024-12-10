@@ -46,6 +46,7 @@ const MessagePage = () => {
   useEffect(() => {
     if(socketConnection){
       socketConnection.emit('message-page', params.userId)
+      socketConnection.emit('seen', params.userId)
       socketConnection.on('message-user', (data: any) => {
         setuserData(data)
       })
@@ -56,11 +57,6 @@ const MessagePage = () => {
 
     }
   }, [socketConnection, params?.userId, user])
-  // useEffect(() => {
-  //   if(currentMsgUse.current){
-  //     currentMsgUse.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
-  //   }
-  // }, [allMessages])
   useEffect(()=>{
     if(currentMsgUse.current){
         currentMsgUse.current.scrollIntoView({behavior : 'smooth', block : 'end'})
@@ -71,6 +67,7 @@ const MessagePage = () => {
   const handleUploadImgVid = () => {
     setopenImgVidUpload(pre => !pre)
   }
+
   const handleUploadImg = async (e: any) => {
     setloading(true);
     if (!e.target.files || e.target.files.length === 0) {

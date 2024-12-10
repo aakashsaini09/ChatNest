@@ -117,7 +117,9 @@ const Sidebar = () => {
                         </div>
                       </div>
                     </div>
-                        <p className="text-xs h-6 w-6 flex justify-center items-center ml-auto p-1 bg-primary text-white rounded-full font-semibold">{conv?.unseenMsg}</p>
+                    { Boolean(conv?.unseenMsg) && ( 
+                        <p className='text-xs w-6 h-6 flex justify-center items-center ml-auto p-1 bg-primary text-white font-semibold rounded-full'>{conv?.unseenMsg}</p>
+                    ) }
                   </NavLink>
                 )
               })
