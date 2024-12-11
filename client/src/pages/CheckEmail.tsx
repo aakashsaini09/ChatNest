@@ -24,7 +24,6 @@ const CheckEmail = () => {
     e.stopPropagation()
     try {
       const res = await axios.post(`${url}/email`, data);
-      console.log("res: ", res)
       if(res.data.success){
         toast.success("Email Verified!!")
         setData({

@@ -78,8 +78,6 @@ const MessagePage = () => {
   
     try {
       const uploadPhoto = await uploadFile(e.target.files[0]);
-      console.log("Uploaded photo is: ", uploadPhoto.url);
-  
       setopenImgVidUpload(false);
       setmessage((pre) => ({
         ...pre,

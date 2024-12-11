@@ -48,9 +48,9 @@ const RegisterPage = () => {
       profile_pic: data.profile_pic, // If not using state update directly, ensure this is present
     };
     try {
-      console.log("payload: ", payload)
+      // console.log("payload: ", payload)
       const res = await axios.post(`${url}/register`, payload);
-      console.log("res: ", res)
+      // console.log("res: ", res)
       if(res.data.success){
         toast.success("User Created Successfully")
         setData({

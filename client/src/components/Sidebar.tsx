@@ -45,7 +45,6 @@ const Sidebar = () => {
           }
         })
         setallUsers(conversationUserData)
-        console.log("conversationUserData: ", conversationUserData)
       })
     }
   }, [socketConnection, user])

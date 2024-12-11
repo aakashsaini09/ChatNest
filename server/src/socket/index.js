@@ -16,7 +16,7 @@ const io = new Server(server, {
 })
 const onlineUser = new Set()
 io.on('connection', async(socket) => {
-    console.log("connected User", socket.id)
+    // console.log("connected User", socket.id)
     const token = await socket.handshake.auth.token
     // get user info
     const user =  await extractUserInfo(token)
@@ -123,7 +123,7 @@ io.on('connection', async(socket) => {
     })
     socket.on('disconnect', () => {
         onlineUser.delete(user?._id?.toString())
-        console.log("disconnected User: ", socket.id)
+        // console.log("disconnected User: ", socket.id)
     })
 })
 export { app , server}
