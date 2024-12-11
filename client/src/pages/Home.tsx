@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
-import logo from '../assets/img.jpg'
+import logo from '../assets/bgimg.png'
 import { RootState } from '../redux/store';
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -59,7 +59,7 @@ const Home = () => {
       <div className={`justify-center items-center flex-col gap-2 hidden ${!basePath ? "hidden" : "lg:flex" }`}>
 
         <div>
-          <img src={logo} width={250} alt="" />
+          <img src={logo} width={900} alt="" />
         </div>
         <p className="text-lg mt-2 text-slate-600">Send Message to Someone</p>
       </div>
