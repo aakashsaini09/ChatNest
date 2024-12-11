@@ -183,7 +183,7 @@ const MessagePage = () => {
           <div className="flex flex-col gap-2 py-2 mx-2" ref={currentMsgUse}>
             {allMessages.map((msg:messageInterface, index) => {
               return(
-                <div className={`bg-white p-1 max-w-[280px] md:max-w-sm lg:max-w-md py-2 rounded w-fit ${user._id ===msg.msgByUserId ? 'ml-auto bg-teal-100' : ''}`}key={index}>
+                <div className={`p-1 max-w-[280px] md:max-w-sm lg:max-w-md py-2 rounded w-fit ${user._id ===msg.msgByUserId ? 'ml-auto bg-teal-100' : 'bg-white'}`}key={index}>
                   <div className="w-full">
                     {msg?.imageUrl && (
                       <img

@@ -122,7 +122,7 @@ io.on('connection', async(socket) => {
         io.to(msgByUserId).emit('conversation',conversationReceiver)
     })
     socket.on('disconnect', () => {
-        onlineUser.delete(user?._id)
+        onlineUser.delete(user?._id?.toString())
         console.log("disconnected User: ", socket.id)
     })
 })

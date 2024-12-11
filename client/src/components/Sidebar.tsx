@@ -1,16 +1,19 @@
 import { IoChatbubbleEllipses } from "react-icons/io5"
 import { FaUserPlus } from "react-icons/fa"
-import { NavLink } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 import { BiLogOut } from "react-icons/bi"
 import Avatar from "./Avatar"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { FaImage, FaVideo } from "react-icons/fa6"
 import { RootState } from "../redux/store"
 import { useEffect, useState } from "react"
 import EditUserPopup from "./EditUserPopup"
 import { FiArrowUpLeft } from "react-icons/fi"
 import SearchUser from "./SearchUser"
+import { logout } from "../redux/userSlice"
 const Sidebar = () => {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
   const user = useSelector((state: RootState) => state.user);
   const [editUser, seteditUser] = useState(false)
   const [allUsers, setallUsers] = useState([])
@@ -46,7 +49,11 @@ const Sidebar = () => {
       })
     }
   }, [socketConnection, user])
-  
+  const handleLogOut = () => {
+    dispatch(logout({}))
+    navigate('/email')
+    localStorage.clear()
+  }
   return (
     <>
       <div className="w-full h-full grid grid-cols-[48px,1fr] bg-white">
@@ -63,7 +70,7 @@ const Sidebar = () => {
               <button title={user.name as string} className="mx-auto" onClick={()=> seteditUser(true)}>
                 <Avatar profile_pic={user?.profile_pic} name={user.name} width={40} height={40} userId={user?._id}/>
               </button>
-                <button title="Logout" className="w-12 h-12 flex justify-center items-center cursor-pointer hover:bg-slate-300 rounded">
+                <button onClick={handleLogOut} title="Logout" className="w-12 h-12 flex justify-center items-center cursor-pointer hover:bg-slate-300 rounded">
                     <span className="-ml-2">
                     <BiLogOut size={22}/>
                     </span>
